@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.selection.SelectionActivity">
+
+    <RadioGroup
+        android:id="@+id/rdgPokemon1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imgSelectionPokemon"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/bulbasur" />
+
+        <RadioButton
+            android:id="@+id/rdbSelectionPokemon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bulbasur" />
+
+        <ImageView
+            android:id="@+id/imgSelectionPokemon2"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/cubone" />
+
+        <RadioButton
+            android:id="@+id/rdbSelectionPokemon2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cubone" />
+
+        <ImageView
+            android:id="@+id/imgSelectionPokemon3"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/feebas" />
+
+        <RadioButton
+            android:id="@+id/rdbSelectionPokemon3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/feebas" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/rdgPokemon2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.8">
+
+        <ImageView
+            android:id="@+id/imgSelectionPokemon4"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/giratina" />
+
+        <RadioButton
+            android:id="@+id/rdbSelectionPokemon4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/giratina" />
+
+        <ImageView
+            android:id="@+id/imgSelectionPokemon5"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/gyarados" />
+
+        <RadioButton
+            android:id="@+id/rdbSelectionPokemon5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gyarados" />
+
+        <ImageView
+            android:id="@+id/imgSelectionPokemon6"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/pikachu" />
+
+        <RadioButton
+            android:id="@+id/rdbSelectionPokemon6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pikachu" />
+
+    </RadioGroup>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
