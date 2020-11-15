@@ -3,8 +3,10 @@ package es.iessaladillo.pedrojoya.intents.ui.winner
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModel
 import es.iessaladillo.pedrojoya.intents.R
 import es.iessaladillo.pedrojoya.intents.data.local.Database
 import es.iessaladillo.pedrojoya.intents.data.local.Database.getPokemonById
@@ -17,50 +19,48 @@ class WinnerActivity : AppCompatActivity() {
 
     companion object {
 
-        const val ID = "POKEMON_ID"
-        const val ID2 = "POKEMON_ID2"
+        const val EXTRA_POKEMON = "POKEMON"
 
-        fun newIntent(context: Context, pokemonId: Int, pokemonId2: Int): Intent =
-            Intent(context,WinnerActivity::class.java)
-                .putExtras(bundleOf(ID to pokemonId, ID2 to pokemonId2))
+
+        fun newIntent(context: Context, pokemon: Pokemon): Intent =
+            Intent(context, WinnerActivity::class.java)
+                .putExtras(bundleOf(EXTRA_POKEMON to pokemon))
     }
 
-    private lateinit var myPokemon: Pokemon
-    private lateinit var myPokemon2: Pokemon
     private lateinit var binding: WinnerActivityBinding
+    private val viewModel: WinnerActivityViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = WinnerActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        getIntentData()
-        setupViews()
-
-    }
-
-    private fun setupViews() {
-        winnerSelect()
-    }
-
-    private fun winnerSelect() {
-        if(myPokemon.force>myPokemon2.force){
-            binding.imgWinnerPokemon.setImageDrawable(getDrawable(myPokemon.icon))
-            binding.lblWinnerPokemon.setText(myPokemon.name)
-        }else {
-            binding.imgWinnerPokemon.setImageDrawable(getDrawable(myPokemon2.icon))
-            binding.lblWinnerPokemon.setText(myPokemon2.name)
+        if (savedInstanceState == null) {
+            getIntentData()
         }
+        savePokemon()
+
     }
+
+    private fun savePokemon() {
+        viewModel.pokemon.observe(this,
+            { setPokemon(it) })
+    }
+
+    private fun setPokemon(it: Pokemon) {
+        binding.imgWinnerPokemon.setImageDrawable(getDrawable(it.icon))
+        binding.lblWinnerPokemon.setText(it.name)
+    }
+
 
     private fun getIntentData() {
-        if (intent == null || !intent.hasExtra(ID) || !intent.hasExtra(ID2)
+        if (intent == null || !intent.hasExtra(EXTRA_POKEMON)
         ) {
             throw RuntimeException(
                 "winnerActivity needs a pokemon")
         }
-        myPokemon =getPokemonById(intent.getIntExtra(ID, 0).toLong())!!
-        myPokemon2=getPokemonById(intent.getIntExtra(ID2,1).toLong())!!
+        viewModel.viewModelChange(intent.getParcelableExtra<Pokemon>(EXTRA_POKEMON) as Pokemon)
+
 
     }
 

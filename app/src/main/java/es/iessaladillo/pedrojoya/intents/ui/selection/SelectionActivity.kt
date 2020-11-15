@@ -8,9 +8,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.get
+import androidx.lifecycle.ViewModel
 import es.iessaladillo.pedrojoya.intents.R
 import es.iessaladillo.pedrojoya.intents.data.local.Database.getAllPokemons
 import es.iessaladillo.pedrojoya.intents.data.local.Database.getPokemonById
@@ -20,88 +22,83 @@ import es.iessaladillo.pedrojoya.intents.databinding.SelectionActivityBinding
 class SelectionActivity : AppCompatActivity() {
 
     companion object {
-        const val ID = "POKEMON_ID"
+        const val EXTRA_POKEMON = "POKEMON"
         const val SCREEN = "SCREEN"
 
 
-        fun newIntent(context: Context, pokemonId: Int, typeScreen: Int): Intent =
+        fun newIntent(context: Context, pokemon: Pokemon, typeScreen: Int): Intent =
             Intent(context, SelectionActivity::class.java)
-                .putExtras(bundleOf(ID to pokemonId, SCREEN to typeScreen))
+                .putExtras(bundleOf(EXTRA_POKEMON to pokemon, SCREEN to typeScreen))
     }
 
     private lateinit var binding: SelectionActivityBinding
-    private lateinit var myPokemon: Pokemon
-    private var num = 0
+    private val viewModel: SelectionActivityViewModel by viewModels()
+    private lateinit var listPokemon: List<RadioButton>
+    private lateinit var listPokemonImg : List<ImageView>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = SelectionActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        getIntentData()
+        if (savedInstanceState == null) {
+            getIntentData()
+        }
         initialStage()
         setupViews()
+        savePokemon()
+
     }
 
     private fun initialStage() {
+        listPokemon = listOf(binding.rdbSelectionPokemon,
+            binding.rdbSelectionPokemon2,
+            binding.rdbSelectionPokemon3,
+            binding.rdbSelectionPokemon4,
+            binding.rdbSelectionPokemon5,
+            binding.rdbSelectionPokemon6)
+        listPokemonImg = listOf(binding.imgSelectionPokemon,
+            binding.imgSelectionPokemon2,
+            binding.imgSelectionPokemon3,
+            binding.imgSelectionPokemon4,
+            binding.imgSelectionPokemon5,
+            binding.imgSelectionPokemon6)
         tagAssign()
-        checkPokemon()
+
 
     }
+
+    private fun savePokemon() {
+        viewModel.pokemon.observe(this,
+            { setPokemon(it) })
+
+
+    }
+
+    private fun setPokemon(poke: Pokemon) {
+        for (i in listPokemon.indices){
+            listPokemon[i].isChecked=listPokemon[i].tag==poke
+        }
+    }
+
 
 
     private fun setupViews() {
-        binding.rdgPokemon1.setOnCheckedChangeListener { group, checkedId ->
-            clearCheck(
-                group,
-                checkedId,
-            )
-        }
-        binding.rdgPokemon2.setOnCheckedChangeListener { group, checkedId ->
-            clearCheck(
-                group,
-                checkedId,
-            )
-        }
-        binding.imgSelectionPokemon.setOnClickListener { v -> checkRadioButton(v) }
-        binding.imgSelectionPokemon2.setOnClickListener { v -> checkRadioButton(v) }
-        binding.imgSelectionPokemon3.setOnClickListener { v -> checkRadioButton(v) }
-        binding.imgSelectionPokemon4.setOnClickListener { v -> checkRadioButton(v) }
-        binding.imgSelectionPokemon5.setOnClickListener { v -> checkRadioButton(v) }
-        binding.imgSelectionPokemon6.setOnClickListener { v -> checkRadioButton(v) }
 
+        for (i in listPokemon.indices){
+            listPokemon[i].setOnClickListener{ viewModel.checkRadioButton(listPokemonImg[i])}
+            listPokemonImg[i].setOnClickListener { v -> viewModel.checkRadioButton(v) }
+        }
 
     }
 
-    private fun checkRadioButton(v: View?) {
-        var img: ImageView = v as ImageView
-        var button: RadioButton = img.tag as RadioButton
-        binding.rdgPokemon2.clearCheck()
-        binding.rdgPokemon1.clearCheck()
-        for (i in 0 until binding.rdgPokemon1.childCount) {
-            if (binding.rdgPokemon1[i].id == button.id) {
-                binding.rdgPokemon1.check(button.id)
-
-            } else {
-                binding.rdgPokemon2.check(button.id)
-
-            }
-        }
-    }
 
 
-    private fun clearCheck(group: RadioGroup, checkedId: Int) {
-
-        for (i in 0 until group.childCount) {
-            if (group[i].id == checkedId) {
-                myPokemon = group[i].tag as Pokemon
-            }
-        }
-    }
 
 
     private fun tagAssign() {
         for (pokemon in getAllPokemons()) {
+
             when (pokemon.name) {
                 R.string.bulbasur -> {
                     binding.rdbSelectionPokemon.tag = pokemon
@@ -134,44 +131,21 @@ class SelectionActivity : AppCompatActivity() {
 
     }
 
+
     private fun getIntentData() {
-        if (intent == null || !intent.hasExtra(ID) || !intent.hasExtra(SCREEN)) {
+        if (intent == null || !intent.hasExtra(EXTRA_POKEMON) || !intent.hasExtra(SCREEN)) {
             throw RuntimeException(
                 "SelectionActivity needs a pokemon")
         }
-        myPokemon = getPokemonById(intent.getIntExtra(ID, 0).toLong())!!
-        num = intent.getIntExtra(SCREEN, 0)
+        viewModel.pokemonChange(intent.getParcelableExtra<Pokemon>(EXTRA_POKEMON) as Pokemon)
+        viewModel.screenChange(intent.getIntExtra(SCREEN, 0))
 
-    }
-
-    private fun checkPokemon() {
-        var myPokemon2: Pokemon
-        for (i in 0 until binding.rdgPokemon1.childCount) {
-            myPokemon2 = if (binding.rdgPokemon1[i].tag is Pokemon) {
-                binding.rdgPokemon1[i].tag as Pokemon
-            } else {
-                binding.rdgPokemon1[i + 1].tag as Pokemon
-            }
-            if (myPokemon2.id == myPokemon.id) {
-                binding.rdgPokemon1.check(binding.rdgPokemon1[i].id)
-            }
-        }
-        for (i in 0 until binding.rdgPokemon2.childCount) {
-            myPokemon2 = if (binding.rdgPokemon2[i].tag is Pokemon) {
-                binding.rdgPokemon2[i].tag as Pokemon
-            } else {
-                binding.rdgPokemon2[i + 1].tag as Pokemon
-            }
-            if (myPokemon2.id == myPokemon.id) {
-                binding.rdgPokemon2.check(binding.rdgPokemon2[i].id)
-            }
-        }
     }
 
 
     override fun onBackPressed() {
         val result = Intent().putExtras(
-            bundleOf(ID to myPokemon.id, SCREEN to num))
+            bundleOf(EXTRA_POKEMON to viewModel.pokemon.value, SCREEN to viewModel.screen.value))
         setResult(RESULT_OK, result)
         super.onBackPressed()
     }

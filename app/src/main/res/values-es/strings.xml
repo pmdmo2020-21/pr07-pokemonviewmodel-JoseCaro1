@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fightText">Selecciona a tus oponentes y comienza la pelea para ver quién es el ganador.</string>
+    <string name="startFight">Comenzar la pelea</string>
+    <string name="winner">Y el ganador es...</string>
+</resources>
